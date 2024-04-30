@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Splines;
-using static UnityEditor.FilePathAttribute;
 
 public class Cuy : MonoBehaviour
 {
     [SerializeField] private SplineContainer path;
-    [SerializeField] private float speed;
-
-    private float distabcePorcentage = 0f;
+    [SerializeField] private int cuyID;
+    private float speed;
+    private float distancePorcentage = 0f;
     private float pathLength;
     private bool active = true;
     private Vector3 inverseScale = new Vector3(1, -1, 1);
+
+    public float DistancePorcentage { get => distancePorcentage; }
+    public float Speed { get => speed; set => speed = value; }
+    public int CUY_ID { get => cuyID; }
 
     void Start()
     {
@@ -25,16 +28,17 @@ public class Cuy : MonoBehaviour
     {
         if (!active) return;
 
-        distabcePorcentage += speed * Time.deltaTime / pathLength;
+        distancePorcentage += speed * Time.deltaTime / pathLength;
 
-        Vector3 currentPosition = path.EvaluatePosition(distabcePorcentage);
-        Vector3 pointerPosition = path.EvaluatePosition(distabcePorcentage + 0.01f);
+        Vector3 currentPosition = path.EvaluatePosition(distancePorcentage);
+        Vector3 pointerPosition = path.EvaluatePosition(distancePorcentage + 0.01f);
         transform.position = currentPosition;
 
         Rotate_Cuy(pointerPosition-currentPosition);
 
-        if(distabcePorcentage > 1f)
+        if(distancePorcentage > 1f)
         {
+            GameManager.instance.On_Cuy_Reach_Goal(this);
             active = false;
         }
     }
@@ -44,11 +48,11 @@ public class Cuy : MonoBehaviour
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
-        if (distabcePorcentage >= 0.3f && distabcePorcentage < 0.75f) 
+        if (distancePorcentage >= 0.3f && distancePorcentage < 0.75f) 
         {
             transform.localScale = inverseScale;
         }
-        else if(distabcePorcentage < 0.3f || distabcePorcentage >= 0.75f) 
+        else if(distancePorcentage < 0.3f || distancePorcentage >= 0.75f) 
         {
             transform.localScale = Vector3.one;
         }
