@@ -8,15 +8,19 @@ public class Cuy : MonoBehaviour
 {
     [SerializeField] private SplineContainer path;
     [SerializeField] private int cuyID;
+
     private float speed;
-    private float distancePorcentage = 0f;
+    [SerializeField]private float distancePorcentage = 0f;
     private float pathLength;
     private bool active = true;
+    private float targetSpeed;
+    private float currentVelocity;
     private Vector3 inverseScale = new Vector3(1, -1, 1);
 
     public float DistancePorcentage { get => distancePorcentage; }
     public float Speed { get => speed; set => speed = value; }
     public int CUY_ID { get => cuyID; }
+    public float TargetSpeed { set => targetSpeed = value; }
 
     void Start()
     {
@@ -27,6 +31,8 @@ public class Cuy : MonoBehaviour
     void Update()
     {
         if (!active) return;
+
+        speed = Mathf.SmoothDamp(speed, targetSpeed, ref currentVelocity, 1);
 
         distancePorcentage += speed * Time.deltaTime / pathLength;
 
@@ -56,5 +62,14 @@ public class Cuy : MonoBehaviour
         {
             transform.localScale = Vector3.one;
         }
+    }
+
+    public void Reset_Position() 
+    {
+        speed = 0f;
+        distancePorcentage = 0f;
+        transform.position = path.EvaluatePosition(distancePorcentage);
+        active = true;
+
     }
 }
