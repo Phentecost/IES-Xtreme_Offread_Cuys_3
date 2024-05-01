@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
 
     bool ending=false;
+
+    //Singleton
     private void Awake()
     {
         if (Instance != null)
@@ -24,6 +26,8 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
+    //Se organiza las posiciones de la tabla de posiciones.
+    //Se termina la ejecución de esta función cuando los cuys llegue a la línea de meta 
     public void Organize_LeaderBoard(List<Cuy> cuys)
     {
         if (ending) return;
@@ -33,6 +37,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    //Se reinicia la tabla de posiciones. 
     public void Reset_LiderBoard() 
     {
         foreach(TextMeshProUGUI txt in leaderBoardTXTs) 
